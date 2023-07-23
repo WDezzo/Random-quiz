@@ -23,11 +23,12 @@ async function getQuestion(apiUrl) {
 
 // Function to display the current question and answer options
 function showQuestion(data) {
-  questionElement.textContent = data.question;
+  questionElement.textContent = data.question.text;
+  console.log(data.question)
   answersElement.innerHTML = "";
   let answerList=[];
   for(let i=0; i<4; i++){
-    i===0?answerList.push(data.correctAnswer):answerList.push(data.incorrectAnswers);
+    i===0?answerList.push(data.correctAnswer):answerList.push(data.incorrectAnswers[i-1]);
   }
   answerList = answerList.sort((a, b) => 0.5 - Math.random());
   answerList.forEach((answer) => {
