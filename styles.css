@@ -6,6 +6,9 @@ body {
     max-width: 500px;
     margin: 0 auto;
   }
+  .card-body{
+    padding: 1rem;
+  }
   
   .card-title {
     text-align: center;
