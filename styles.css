@@ -1,0 +1,42 @@
+body {
+    background-color: #2c2c2c;
+  }
+  
+  #quiz-container {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .card-title {
+    text-align: center;
+  }
+  
+  #question {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  #answers {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #answers button {
+    margin: 5px 0;
+  }
+  
+  .correct {
+    background-color: #0bdb3c;
+    border-color: #00ff3c;
+  }
+  
+  .incorrect {
+    background-color: #77050f;
+    border-color: #f31329;
+  }
+  
+  #next-btn {
+    display: block;
+    margin: 0 auto;
+  }
+  
