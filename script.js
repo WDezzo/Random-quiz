@@ -1,6 +1,7 @@
 const apiUrl = "https://the-trivia-api.com/v2/questions";
 const quizContainer = document.getElementById("quiz-container");
 const showAnswersButton = document.getElementById("show-answers-btn");
+const tryAgainButton = document.getElementById("try-again-btn");
 
 let questions = [];
 let correctAnswers = 0;
@@ -24,6 +25,15 @@ function showQuestions() {
 
   showAnswersButton.classList.remove("d-none");
   showAnswersButton.addEventListener("click", showAnswers);
+
+  tryAgainButton.classList.remove("d-none");
+  tryAgainButton.addEventListener("click", () => {
+    correctAnswers = 0;
+    quizContainer.innerHTML = ""; // Clear previous questions
+    fetchQuestions();
+    showAnswersButton.disabled = false;
+    tryAgainButton.disabled = true;
+  });
 }
 
 function createQuestionCard(question, index) {
@@ -53,6 +63,11 @@ function createQuestionCard(question, index) {
     const label = document.createElement("label");
     label.textContent = answer;
     label.classList.add("form-check-label");
+    label.addEventListener("click", () => {
+      if (!input.checked) {
+        input.checked = true;
+      }
+    });
     answerItem.appendChild(label);
 
     answerList.appendChild(answerItem);
@@ -92,6 +107,7 @@ function showAnswers() {
   });
 
   showAnswersButton.disabled = true;
+  tryAgainButton.disabled = false;
   showResult();
 }
 
