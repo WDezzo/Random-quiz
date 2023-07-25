@@ -1,7 +1,13 @@
+
 const apiUrl = "https://the-trivia-api.com/v2/questions";
 const quizContainer = document.getElementById("quiz-container");
 const showAnswersButton = document.getElementById("show-answers-btn");
-const tryAgainButton = document.getElementById("try-again-btn");
+const tryAgainButton = document.getElementById("try-again-btn"); 
+
+// <<<<<<<<start comment>>>>>>>>
+// for testing the app offline
+// let questions = [{"category":"arts_and_literature","id":"622a1c3d7cc59eab6f951c9b","correctAnswer":"Charles Dickens","incorrectAnswers":["Thomas Hardy","Jane Austen","Edgar Allen Poe"],"question":{"text":"Who was the author of 'A Christmas Carol'?"},"tags":["literature","christmas","arts_and_literature"],"type":"text_choice","difficulty":"easy","regions":[],"isNiche":false},{"category":"geography","id":"622a1c357cc59eab6f94ffe9","correctAnswer":"Yamagata","incorrectAnswers":["Ōsaka","Kyoto","Yokohama"],"question":{"text":"Which city used to be called Takase?"},"tags":["cities","geography"],"type":"text_choice","difficulty":"hard","regions":[],"isNiche":false},{"category":"music","id":"622a1c387cc59eab6f950b18","correctAnswer":"Spice Girls","incorrectAnswers":["Editors","Cradle of Filth","The Sweet"],"question":{"text":"Which band includes 'Melanie Brown'?"},"tags":["music"],"type":"text_choice","difficulty":"medium","regions":[],"isNiche":false},{"category":"music","id":"625063b5e12f6dec240bdf7c","correctAnswer":"a-ha","incorrectAnswers":["Biz Markie","Haddaway","Bobby McFerrin"],"question":{"text":"Who had a hit in 1985 with Take on Me?"},"tags":["songs","one_hit_wonders","1980's","music"],"type":"text_choice","difficulty":"medium","regions":[],"isNiche":false},{"category":"food_and_drink","id":"625007270d86c8f685d80f18","correctAnswer":"Tubular pasta","incorrectAnswers":["Ribbon pasta","Strand pasta","Stuffed pasta"],"question":{"text":"What type of pasta is ziti?"},"tags":["food","italy","food_and_drink"],"type":"text_choice","difficulty":"hard","regions":[],"isNiche":false},{"category":"general_knowledge","id":"622a1c357cc59eab6f94fc70","correctAnswer":"Lollygag","incorrectAnswers":["Hullaballoo","Sprunt","Collywobbles"],"question":{"text":"Which word is defined as 'to spend time aimlessly'?"},"tags":["words","general_knowledge"],"type":"text_choice","difficulty":"hard","regions":[],"isNiche":false},{"category":"society_and_culture","id":"6495b50be831b1ab5aa11111","correctAnswer":"Air Force One","incorrectAnswers":["The Big One","US One","The Reagan Jet"],"question":{"text":"What is the name of the plane that carried the President of the United States?"},"tags":["aviation","usa","presidents","society_and_culture"],"type":"text_choice","difficulty":"easy","regions":[],"isNiche":false},{"category":"geography","id":"6237359acfe13103f55eb54b","correctAnswer":"Niger","incorrectAnswers":["New Zealand","Nepal","Netherlands"],"question":{"text":"Which region of the world uses '.ne' at the end of its web addresses?"},"tags":["the_internet","geography"],"type":"text_choice","difficulty":"hard","regions":[],"isNiche":false},{"category":"geography","id":"622a1c357cc59eab6f94fe44","correctAnswer":"Greenland","incorrectAnswers":["Madagascar","Borneo","New Guinea"],"question":{"text":"What is the largest island in the world? "},"tags":["islands","records","geography"],"type":"text_choice","difficulty":"hard","regions":[],"isNiche":false},{"category":"music","id":"622a1c387cc59eab6f950bb4","correctAnswer":"Dire Straits","incorrectAnswers":["Deep Purple","The Moody Blues","The Shadows"],"question":{"text":"Which British rock band released the song 'Money for Nothing'?"},"tags":["rock_music","music"],"type":"text_choice","difficulty":"hard","regions":[],"isNiche":false}];
+// <<<<<<<<end comment>>>>>>>>
 
 let questions = [];
 let correctAnswers = 0;
@@ -18,6 +24,7 @@ async function fetchQuestions() {
 }
 
 function showQuestions() {
+  quizContainer.innerHTML = ""; // Clear previous questions
   questions.forEach((question, index) => {
     const card = createQuestionCard(question, index);
     quizContainer.appendChild(card);
@@ -27,9 +34,11 @@ function showQuestions() {
   showAnswersButton.addEventListener("click", showAnswers);
 
   tryAgainButton.classList.remove("d-none");
-  tryAgainButton.addEventListener("click", () => {
+  tryAgainButton.addEventListener("click", (event) => {
+    event.preventDefault();
     correctAnswers = 0;
     quizContainer.innerHTML = ""; // Clear previous questions
+    // showQuestions();
     fetchQuestions();
     showAnswersButton.disabled = false;
     tryAgainButton.disabled = true;
@@ -137,4 +146,5 @@ function showResult() {
   quizContainer.appendChild(resultCard);
 }
 
+// showQuestions();
 fetchQuestions();

@@ -1,0 +1,35 @@
+body{
+  background-color: #101010;
+  color: rgb(228, 252, 252);
+} 
+
+h1{
+  color: aqua;
+}
+.card{
+  background-color: #505050;
+  color: rgb(252, 228, 197);
+  padding: 0.5rem auto;
+}
+.correct{
+  background-color: rgb(0, 201, 0);
+}
+.incorrect{
+  background-color: red;
+}
+input{
+  margin-right: 0.5rem;
+}
+
+.gold{
+  background-color: gold;
+  color: black;
+}
+.orange{
+  background-color: orangered;
+  color: black;
+}
+.red{
+  background-color: darkred;
+  color: black;
+}
