@@ -1,89 +1,124 @@
-// API URL to fetch random questions
 const apiUrl = "https://the-trivia-api.com/v2/questions";
-
-// DOM elements
 const quizContainer = document.getElementById("quiz-container");
-const questionElement = document.getElementById("question");
-const answersElement = document.getElementById("answers");
-const nextButton = document.getElementById("next-btn");
+const showAnswersButton = document.getElementById("show-answers-btn");
 
-let currentQuestion = {};
+let questions = [];
+let correctAnswers = 0;
 
-// Function to fetch a random question from the API
-async function getQuestion(apiUrl) {
+async function fetchQuestions() {
   try {
     const response = await fetch(apiUrl);
     const data = await response.json();
-    currentQuestion = data[0];
-    showQuestion(currentQuestion);
+    questions = data;
+    showQuestions();
   } catch (error) {
-    console.error("Error fetching question:", error);
+    console.error("Error fetching questions:", error);
   }
 }
 
-// Function to display the current question and answer options
-function showQuestion(data) {
-  questionElement.textContent = data.question.text;
-  answersElement.innerHTML = "";
-  let answerList=[];
-  for(let i=0; i<4; i++){
-    i===0?answerList.push(data.correctAnswer):answerList.push(data.incorrectAnswers[i-1]);
-  }
-  answerList = answerList.sort((a, b) => 0.5 - Math.random());
-  answerList.forEach((answer) => {
-    const button = document.createElement("button");
-    button.textContent = answer;
-    button.classList.add("btn", "btn-light");
-    button.addEventListener("click", checkAnswer);
-    answersElement.appendChild(button);
+function showQuestions() {
+  questions.forEach((question, index) => {
+    const card = createQuestionCard(question, index);
+    quizContainer.appendChild(card);
   });
+
+  showAnswersButton.classList.remove("d-none");
+  showAnswersButton.addEventListener("click", showAnswers);
 }
 
-// Function to check the selected answer and provide feedback
-function checkAnswer(event) {
-  const selectedAnswer = event.target.textContent;
-  const correctAnswer = currentQuestion.correctAnswer;
+function createQuestionCard(question, index) {
+  const card = document.createElement("div");
+  card.classList.add("card", "mb-4");
 
-  if (selectedAnswer === correctAnswer) {
-    event.target.classList.add("correct");
-    showFeedback("Correct!", true);
+  const cardBody = document.createElement("div");
+  cardBody.classList.add("card-body");
+
+  const questionElement = document.createElement("h5");
+  questionElement.textContent = `${index + 1}. ${question.question.text}`;
+
+  const answerList = document.createElement("ul");
+  answerList.classList.add("list-unstyled");
+  let listAnswer = [...question.incorrectAnswers, question.correctAnswer];
+  listAnswer = listAnswer.sort((a, b) => 0.5 - Math.random());
+
+  listAnswer.forEach((answer) => {
+    const answerItem = document.createElement("li");
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = `question-${index}`;
+    input.value = answer;
+    input.classList.add("form-check-input");
+    answerItem.appendChild(input);
+    
+    const label = document.createElement("label");
+    label.textContent = answer;
+    label.classList.add("form-check-label");
+    answerItem.appendChild(label);
+
+    answerList.appendChild(answerItem);
+  });
+
+  cardBody.appendChild(questionElement);
+  cardBody.appendChild(answerList);
+  card.appendChild(cardBody);
+
+  return card;
+}
+
+function showAnswers() {
+  questions.forEach((question, index) => {
+    const correctAnswer = question.correctAnswer;
+    const card = quizContainer.children[index];
+    const selectedAnswer = card.querySelector(`input[name="question-${index}"]:checked`);
+    
+    const feedbackElement = document.createElement("div");
+    feedbackElement.classList.add("mt-3", "font-weight-bold");
+
+    if (selectedAnswer) {
+      if (selectedAnswer.value === correctAnswer) {
+        correctAnswers++;
+        card.classList.add("correct");
+        feedbackElement.textContent = "Correct!";
+      } else {
+        card.classList.add("incorrect");
+        feedbackElement.textContent = `Incorrect! The correct answer is: ${correctAnswer}`;
+      }
+    } else {
+      card.classList.add("unanswered");
+      feedbackElement.textContent = `Unanswered! The correct answer is: ${correctAnswer}`;
+    }
+
+    card.appendChild(feedbackElement);
+  });
+
+  showAnswersButton.disabled = true;
+  showResult();
+}
+
+function showResult() {
+  const resultCard = document.createElement("div");
+  resultCard.classList.add("card", "mb-4");
+
+  const resultCardBody = document.createElement("div");
+  resultCardBody.classList.add("card-body");
+
+  const resultElement = document.createElement("p");
+  resultElement.textContent = `You answered ${correctAnswers} out of ${questions.length} questions correctly. (${correctAnswers}/${questions.length})`;
+
+  const commentElement = document.createElement("p");
+  if (correctAnswers === questions.length) {
+    commentElement.textContent = "Congratulations! You got all the answers right!";
+  } else if (correctAnswers >= questions.length / 2) {
+    commentElement.textContent = "Good job! You did well, but keep practicing!";
   } else {
-    event.target.classList.add("incorrect");
-    showFeedback(`Incorrect! The correct answer is: ${correctAnswer}`, false);
+    commentElement.textContent = "Too bad! Try again and improve your score!";
   }
 
-  // Disable all answer buttons after selection
-  document.querySelectorAll("#answers button").forEach((button) => {
-    button.disabled = true;
-  });
+  resultCardBody.appendChild(resultElement);
+  resultCardBody.appendChild(commentElement);
+  resultCard.appendChild(resultCardBody);
 
-  nextButton.style.display = "block";
-  nextButton.addEventListener("click", nextQuestion);
+  quizContainer.appendChild(resultCard);
 }
 
-// Function to show feedback after user selects an answer
-function showFeedback(feedbackText, isCorrect) {
-  const feedbackElement = document.createElement("div");
-  feedbackElement.textContent = feedbackText;
-  feedbackElement.classList.add("mt-3", "font-weight-bold", isCorrect ? "text-success" : "text-danger");
-  quizContainer.appendChild(feedbackElement);
-}
-
-// Function to move to the next question
-function nextQuestion() {
-  // Enable all answer buttons and remove any highlighting
-  document.querySelectorAll("#answers button").forEach((button) => {
-    button.disabled = false;
-    button.classList.remove("correct", "incorrect");
-  });
-
-  // Hide the feedback from the previous question
-  nextButton.style.display = "none";
-  quizContainer.removeChild(quizContainer.lastChild);
-
-  // Fetch the next question
-  getQuestion(apiUrl);
-}
-
-// Fetch the first question to start the quiz
-getQuestion(apiUrl);
+fetchQuestions();
